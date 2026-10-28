@@ -18,3 +18,8 @@ ios/build/
 Thumbs.db
 *.tmp
 *~
+android-sdk/
+android-build/
+.xdg/
+tools/
+upload/
