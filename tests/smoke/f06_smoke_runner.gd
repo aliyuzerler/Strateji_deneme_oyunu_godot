@@ -169,11 +169,20 @@ func _run() -> void:
         _check(_count_sprites(arena.air_fx) > 0, "Parlama + ayak tozu uretildi")
 
         # 10) Hasar etiketi + olum tozu (butce ustunden)
-        var lbl0 := _count_sprites(arena.air_fx, "Label")
+        # Determinizm: canlı etiket havuzu temizlenir (eski etiketin tam
+        # yeni etiket doğarken serbest kalması net-0 yarışı yaratırdı).
+        for c in arena.air_fx.get_children():
+                if c is Label:
+                        c.queue_free()
+        await _wait_frames(2)
         player.invuln = 0.0  # Atılım invuln'u etiket testini yutmasin (test dayatmasi)
         player.take_hit(3, player.position + Vector2(40, 0))
         await _wait_frames(2)
-        _check(_count_sprites(arena.air_fx, "Label") > lbl0, "Oyuncu hasar etiketi uretildi")
+        if OS.get_cmdline_user_args().has("--debug-label"):
+                print("   TESIH: hp=%d max=%d invuln=%.2f dead=%s resp=%s lbl=%d" % [
+                        player.hp, player.max_hp, player.invuln, str(player.dead),
+                        str(player._respawning), _count_sprites(arena.air_fx, "Label")])
+        _check(_count_sprites(arena.air_fx, "Label") >= 1, "Oyuncu hasar etiketi uretildi")
 
         # 11) Guvenli alan: dayatma + gorsel isaret + sifirlama
         hud.debug_force_safe_area(110.0, 40.0, 70.0, 0.0, true)

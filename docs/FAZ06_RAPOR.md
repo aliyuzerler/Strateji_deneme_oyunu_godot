@@ -96,6 +96,10 @@ Kalite DÜŞÜK'te: toz olasılığı 0.45, iz olasılığı 0.45, küme sayıla
    kullanılmalıydı (parse hatası) → düzeltildi.
 6. **lambda'da serbest nesne yakalama:** toplama testinde orb serbest kalınca
    uyarı → `instance_id` üzerinden güvenli erişim.
+7. **etiket kontrolünde canlı-havuz yarışı (test tarafı):** hasar etiketi
+   sayım deltası, havuzdaki eski bir etiket tam yeni etiket doğarken
+   serbest kalınca net-0 kalabiliyordu → kontrol artık etiket havuzunu
+   temizleyip mutlak sayımla doğrular (3 tekrarlı koşuda stabil 43/43).
 
 ## 7. Ekran Görüntüsü Kanıtları (`tests/smoke/shots/` → `download/dustbound-proof-shots/`)
 
