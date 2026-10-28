@@ -2,9 +2,9 @@
 
 > Bu dosya, Dustbound üzerinde çalışan yapay zekâ geliştirme ajanlarının ve ekip üyelerinin ortak operasyon kılavuzudur. **Sonraki tüm görevlerde bu beş doküman (AGENTS, ARCHITECTURE, ART_DIRECTION, ASSET_PIPELINE, TESTING) esas alınır.** Hiçbir kod veya varlık üretimi, ilgili doküman okunmadan başlatılmaz.
 
-- Sürüm: 0.1.1
+- Sürüm: 0.2.0
 - Son güncelleme: 2026-10-28
-- Aşama: **0.5 — İzometrik Kanıt Sahnesi** (0: Temel Dokümantasyon tamamlandı)
+- Aşama: **Faz 05 — Savaş Varlıkları** (0: Temel Dokümantasyon, 0.5: İzometrik Kanıt Sahnesi tamamlandı)
 
 ---
 

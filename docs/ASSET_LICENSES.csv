@@ -12,3 +12,26 @@ tpl-010,assets/art/environment/props/tex_prop_crystal_01.png,proje-ici,Placehold
 tpl-011,assets/art/vfx/tex_fx_target_marker_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
 tpl-012,assets/art/vfx/tex_fx_blob_shadow_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
 tpl-013,assets/art/vfx/tex_fx_light_falloff_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-014,assets/art/characters/tex_unit_player_idle_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-015,assets/art/characters/tex_unit_player_walk_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-016,assets/art/characters/tex_unit_player_attack_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-017,assets/art/characters/tex_unit_player_hurt_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-018,assets/art/characters/tex_unit_player_death_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-019,assets/art/characters/tex_unit_runner_idle_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-020,assets/art/characters/tex_unit_runner_walk_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-021,assets/art/characters/tex_unit_runner_attack_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-022,assets/art/characters/tex_unit_runner_hurt_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-023,assets/art/characters/tex_unit_runner_death_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-024,assets/art/characters/tex_unit_brute_idle_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-025,assets/art/characters/tex_unit_brute_walk_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-026,assets/art/characters/tex_unit_brute_attack_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-027,assets/art/characters/tex_unit_brute_hurt_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-028,assets/art/characters/tex_unit_brute_death_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-029,assets/art/characters/tex_unit_spitter_idle_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-030,assets/art/characters/tex_unit_spitter_walk_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-031,assets/art/characters/tex_unit_spitter_attack_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-032,assets/art/characters/tex_unit_spitter_hurt_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-033,assets/art/characters/tex_unit_spitter_death_sheet_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-034,assets/art/vfx/tex_fx_bolt_player_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-035,assets/art/vfx/tex_fx_bolt_enemy_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-036,assets/art/vfx/tex_fx_ring_telegraph_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent

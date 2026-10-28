@@ -34,11 +34,19 @@ const LIGHT_TEXTURE := "res://assets/art/vfx/tex_fx_light_falloff_01.png"
 @onready var hud: ArenaHud = $HUD
 @onready var input_node: ArenaInput = $ArenaInput
 @onready var marker: Sprite2D = $TargetMarker
+@onready var ground_fx: Node2D = $GroundFx
+@onready var air_fx: CombatFx = $AirFx
 
 var player: PlaceholderPlayer
 var pillar: IsoEntity
 var world_bounds := Rect2()
 var paused := false
+
+# Faz 05: savas orkestrasyonu
+var registry: EnemyRegistry = null
+var director: EnemyDirector = null
+var lock_marker: Sprite2D = null
+var _hud_acc := 0.0
 
 
 func _ready() -> void:
@@ -47,8 +55,13 @@ func _ready() -> void:
         _setup_marker()
         _setup_connections()
         _setup_camera()
+        _setup_combat()
         if OS.get_cmdline_user_args().has("--shot"):
                 _run_shot_sequence()
+        for arg in OS.get_cmdline_user_args():
+                if arg.begins_with("--bench="):
+                        _run_bench(int(arg.get_slice("=", 1)))
+                        break
 
 
 func _build_ground() -> void:
@@ -143,11 +156,26 @@ func _setup_camera() -> void:
         camera_rig.set_bounds(world_bounds.grow(256.0))
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
         hud.update_position(IsoMath.world_to_map(player.position), player.position,
                         camera_rig.get_zoom())
         # hedef isareti yalnizca yuruyus surerken gorunur
         marker.visible = player.moving
+        _hud_acc += delta
+        if _hud_acc >= 0.2:
+                _hud_acc = 0.0
+                var target_name := "-"
+                if player.current_target != null and is_instance_valid(player.current_target):
+                        target_name = player.current_target.display_name
+                hud.set_combat_info("Düşman: %d  |  HP: %d/%d  |  Hedef: %s" % [
+                        registry.count(), player.hp, player.max_hp, target_name])
+        if lock_marker != null:
+                var t := player.current_target
+                if t != null and is_instance_valid(t) and not t.dead:
+                        lock_marker.visible = true
+                        lock_marker.position = t.global_position
+                else:
+                        lock_marker.visible = false
 
 
 func _on_move_order(world_pos: Vector2) -> void:
@@ -172,6 +200,49 @@ func toggle_pause() -> void:
         hud.pause_button.text = "DEVAM" if paused else "DURAKLAT"
 
 
+# -------------------------------------------------- Faz 05: savas orkestrasyonu
+func _setup_combat() -> void:
+        registry = EnemyRegistry.new()
+        add_child(registry)
+        air_fx.ground_parent = ground_fx
+        director = EnemyDirector.new()
+        add_child(director)
+        director.setup(ground_layer, entities_layer, player, registry, air_fx, world_bounds)
+        player.registry = registry
+        player.fx = air_fx
+        player.bolt_parent = air_fx
+        player.respawn_point = player.position
+        player.died.connect(_on_player_died)
+        director.bench_finished.connect(_on_bench_finished)
+        lock_marker = Sprite2D.new()
+        lock_marker.texture = load(MARKER_TEXTURE)
+        lock_marker.modulate = Color(0.18, 0.77, 0.71, 0.85)
+        lock_marker.scale = Vector2(0.8, 0.8)
+        ground_fx.add_child(lock_marker)
+        lock_marker.visible = false
+        hud.wave_button_pressed.connect(func() -> void: spawn_demo_wave())
+        hud.bench_button_pressed.connect(func() -> void: director.run_bench(100, 8.0))
+
+
+func spawn_demo_wave(count: int = 6) -> void:
+        director.spawn_wave(count)
+
+
+func _on_player_died(_unit: CombatUnit) -> void:
+        hud.set_status("DÜŞTÜ — yeniden doğuluyor...")
+
+
+func _on_bench_finished(r: Dictionary) -> void:
+        hud.set_status("ÖLÇÜM: %d düşman · avg %.2f ms · p95 %.2f ms · max %.2f ms" % [
+                r["alive"], r["avg_ms"], r["p95_ms"], r["max_ms"]])
+
+
+func _run_bench(total: int) -> void:
+        await director.run_bench(total, 8.0)
+        print("F05_BENCH_DONE")
+        get_tree().quit()
+
+
 # -------------------------------------------------- ekran goruntusu modu
 func _shot_prefix() -> String:
         var prefix := "/home/z/my-project/dustbound/tests/smoke/shots/arena"
@@ -192,6 +263,12 @@ func _run_shot_sequence() -> void:
         await _walk_and_shoot(pillar_pos + Vector2(0, -58), prefix + "_behind.png")
         await _walk_and_shoot(ground_layer.map_to_local(CRYSTAL_CELL + Vector2i(1, 1)),
                         prefix + "_crystal.png")
+        # Faz 05 savas kaniti: dalga uret, eylem anlarini yakala
+        director.spawn_wave(6)
+        await get_tree().create_timer(1.8).timeout
+        await _capture(prefix + "_f05_combat.png")
+        await get_tree().create_timer(1.6).timeout
+        await _capture(prefix + "_f05_combat_late.png")
         print("SHOT_SEQUENCE_DONE")
         get_tree().quit()
 
@@ -202,6 +279,10 @@ func _walk_and_shoot(world_target: Vector2, path: String) -> void:
         while player.moving:
                 await get_tree().process_frame
         await get_tree().create_timer(0.7).timeout  # kamera yakinsamasi
+        await _capture(path)
+
+
+func _capture(path: String) -> void:
         await RenderingServer.frame_post_draw
         var img := get_viewport().get_texture().get_image()
         if img == null or img.is_empty():

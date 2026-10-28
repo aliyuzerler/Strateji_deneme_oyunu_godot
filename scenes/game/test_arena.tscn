@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/systems/test_arena.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/game/camera_rig.tscn" id="2"]
 [ext_resource type="Script" path="res://scripts/systems/arena_input.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/ui/arena_hud.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/systems/combat_fx.gd" id="5"]
 
 [node name="TestArena" type="Node2D"]
 script = ExtResource("1")
@@ -23,11 +24,16 @@ energy = 0.32
 [node name="StructureLayer" type="TileMapLayer" parent="."]
 y_sort_enabled = true
 
+[node name="GroundFx" type="Node2D" parent="."]
+
 [node name="TargetMarker" type="Sprite2D" parent="."]
 visible = false
 
 [node name="EntitiesLayer" type="Node2D" parent="."]
 y_sort_enabled = true
+
+[node name="AirFx" type="Node2D" parent="."]
+script = ExtResource("5")
 
 [node name="CameraRig" parent="." instance=ExtResource("2")]
 
@@ -87,6 +93,19 @@ theme_override_constants/shadow_offset_y = 1
 theme_override_font_sizes/font_size = 17
 text = ""
 
+[node name="CombatLabel" type="Label" parent="HUD/Root"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 94.0
+offset_right = 940.0
+offset_bottom = 118.0
+theme_override_colors/font_color = Color(0.7, 0.9, 0.87, 1)
+theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 17
+text = "Düşman: 0"
+
 [node name="PauseButton" type="Button" parent="HUD/Root"]
 layout_mode = 1
 anchors_preset = 1
@@ -98,6 +117,38 @@ offset_right = -16.0
 offset_bottom = 54.0
 grow_horizontal = 0
 text = "DURAKLAT"
+
+[node name="WaveButton" type="Button" parent="HUD/Root"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -152.0
+offset_right = -20.0
+offset_bottom = -84.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 20
+text = "DALGA +6"
+
+[node name="BenchButton" type="Button" parent="HUD/Root"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -76.0
+offset_right = -20.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 20
+text = "ÖLÇÜM 100"
 
 [node name="HintLabel" type="Label" parent="HUD/Root"]
 layout_mode = 1
@@ -115,4 +166,4 @@ theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_font_sizes/font_size = 15
-text = "Tek dokunuş: yürü · İki parmak: yakınlaştır · WASD/oklar: geliştirici hareketi · ESC: duraklat"
+text = "Tek dokunuş: yürü · İki parmak: yakınlaştır · WASD/oklar: geliştirici hareketi · ESC: duraklat · DALGA/ÖLÇÜM butonları: savaş testi · GEÇİCİ GÖRSELLER (TMP)"
