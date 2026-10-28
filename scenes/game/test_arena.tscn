@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/systems/test_arena.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/game/camera_rig.tscn" id="2"]
 [ext_resource type="Script" path="res://scripts/systems/arena_input.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/ui/arena_hud.gd" id="4"]
 [ext_resource type="Script" path="res://scripts/systems/combat_fx.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/ui/game_hud.gd" id="6"]
 
 [node name="TestArena" type="Node2D"]
 script = ExtResource("1")
@@ -25,6 +26,8 @@ energy = 0.32
 y_sort_enabled = true
 
 [node name="GroundFx" type="Node2D" parent="."]
+
+[node name="LootLayer" type="Node2D" parent="."]
 
 [node name="TargetMarker" type="Sprite2D" parent="."]
 visible = false
@@ -54,11 +57,20 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="PerfLabel" type="Label" parent="HUD/Root"]
+[node name="DevPanel" type="Control" parent="HUD/Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PerfLabel" type="Label" parent="HUD/Root/DevPanel"]
 layout_mode = 0
-offset_left = 16.0
+offset_left = 470.0
 offset_top = 10.0
-offset_right = 940.0
+offset_right = 1260.0
 offset_bottom = 34.0
 theme_override_colors/font_color = Color(0.956863, 0.913725, 0.823529, 1)
 theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
@@ -67,11 +79,11 @@ theme_override_constants/shadow_offset_y = 1
 theme_override_font_sizes/font_size = 17
 text = "FPS: -"
 
-[node name="PosLabel" type="Label" parent="HUD/Root"]
+[node name="PosLabel" type="Label" parent="HUD/Root/DevPanel"]
 layout_mode = 0
-offset_left = 16.0
+offset_left = 470.0
 offset_top = 38.0
-offset_right = 940.0
+offset_right = 1260.0
 offset_bottom = 62.0
 theme_override_colors/font_color = Color(0.956863, 0.913725, 0.823529, 1)
 theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
@@ -80,11 +92,11 @@ theme_override_constants/shadow_offset_y = 1
 theme_override_font_sizes/font_size = 17
 text = "Hücre: -"
 
-[node name="StatusLabel" type="Label" parent="HUD/Root"]
+[node name="StatusLabel" type="Label" parent="HUD/Root/DevPanel"]
 layout_mode = 0
-offset_left = 16.0
+offset_left = 470.0
 offset_top = 66.0
-offset_right = 940.0
+offset_right = 1260.0
 offset_bottom = 90.0
 theme_override_colors/font_color = Color(0.851, 0.627, 0.357, 1)
 theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
@@ -93,11 +105,11 @@ theme_override_constants/shadow_offset_y = 1
 theme_override_font_sizes/font_size = 17
 text = ""
 
-[node name="CombatLabel" type="Label" parent="HUD/Root"]
+[node name="CombatLabel" type="Label" parent="HUD/Root/DevPanel"]
 layout_mode = 0
-offset_left = 16.0
+offset_left = 470.0
 offset_top = 94.0
-offset_right = 940.0
+offset_right = 1260.0
 offset_bottom = 118.0
 theme_override_colors/font_color = Color(0.7, 0.9, 0.87, 1)
 theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
@@ -106,57 +118,53 @@ theme_override_constants/shadow_offset_y = 1
 theme_override_font_sizes/font_size = 17
 text = "Düşman: 0"
 
-[node name="PauseButton" type="Button" parent="HUD/Root"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -170.0
-offset_top = 10.0
-offset_right = -16.0
-offset_bottom = 54.0
-grow_horizontal = 0
+[node name="FxLabel" type="Label" parent="HUD/Root/DevPanel"]
+layout_mode = 0
+offset_left = 470.0
+offset_top = 122.0
+offset_right = 1260.0
+offset_bottom = 146.0
+theme_override_colors/font_color = Color(0.7, 0.9, 0.87, 1)
+theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 17
+text = "FX: -"
+
+[node name="PauseButton" type="Button" parent="HUD/Root/DevPanel"]
+layout_mode = 0
+offset_left = 470.0
+offset_top = 156.0
+offset_right = 620.0
+offset_bottom = 200.0
+theme_override_font_sizes/font_size = 17
 text = "DURAKLAT"
 
-[node name="WaveButton" type="Button" parent="HUD/Root"]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -190.0
-offset_top = -152.0
-offset_right = -20.0
-offset_bottom = -84.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 20
+[node name="WaveButton" type="Button" parent="HUD/Root/DevPanel"]
+layout_mode = 0
+offset_left = 636.0
+offset_top = 156.0
+offset_right = 786.0
+offset_bottom = 200.0
+theme_override_font_sizes/font_size = 17
 text = "DALGA +6"
 
-[node name="BenchButton" type="Button" parent="HUD/Root"]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -190.0
-offset_top = -76.0
-offset_right = -20.0
-offset_bottom = -8.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 20
+[node name="BenchButton" type="Button" parent="HUD/Root/DevPanel"]
+layout_mode = 0
+offset_left = 802.0
+offset_top = 156.0
+offset_right = 952.0
+offset_bottom = 200.0
+theme_override_font_sizes/font_size = 17
 text = "ÖLÇÜM 100"
 
-[node name="HintLabel" type="Label" parent="HUD/Root"]
+[node name="HintLabel" type="Label" parent="HUD/Root/DevPanel"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -42.0
+offset_top = -66.0
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -165,5 +173,10 @@ theme_override_colors/font_color = Color(0.956863, 0.913725, 0.823529, 0.85)
 theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 15
-text = "Tek dokunuş: yürü · İki parmak: yakınlaştır · WASD/oklar: geliştirici hareketi · ESC: duraklat · DALGA/ÖLÇÜM butonları: savaş testi · GEÇİCİ GÖRSELLER (TMP)"
+theme_override_font_sizes/font_size = 14
+text = "Tek dokunuş: yürü · Joystick (sol alt): hareket · Q/E: yetenek · İki parmak: yakınlaştır · WASD/oklar: geliştirici hareketi · ESC: duraklat · GEÇİCİ GÖRSELLER (TMP)"
+
+[node name="GameHud" type="CanvasLayer" parent="."]
+process_mode = 3
+layer = 2
+script = ExtResource("6")

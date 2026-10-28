@@ -134,11 +134,11 @@ func take_hit(amount: int, from_pos: Vector2) -> void:
                 hp_bar.queue_redraw()
 
 
-func fire_bolt(target_pos: Vector2, p_speed: float) -> void:
+func fire_bolt(target_pos: Vector2, p_speed: float, p_damage: int = -1) -> void:
         if bolt_parent == null:
                 return
         var bolt: CombatBolt = load("res://scripts/entities/projectile.gd").new()
-        bolt.setup(unit_team, attack_damage, registry, fx, _bolt_player_ref())
+        bolt.setup(unit_team, p_damage if p_damage >= 0 else attack_damage, registry, fx, _bolt_player_ref())
         bolt.position = global_position + Vector2(0.0, -60.0)
         var dir := (target_pos - bolt.position).normalized()
         if dir == Vector2.ZERO:
@@ -173,6 +173,9 @@ func _start_death() -> void:
         if registry != null:
                 registry.unregister(self)
         _force_anim("death")
+        # Faz 06: olum tozu bulutu (turkuaz tint yalnizca oyuncuda)
+        if fx is CombatFx:
+                (fx as CombatFx).spawn_death_dust(global_position, unit_team == "player")
         if hp_bar != null:
                 hp_bar.queue_redraw()
         died.emit(self)

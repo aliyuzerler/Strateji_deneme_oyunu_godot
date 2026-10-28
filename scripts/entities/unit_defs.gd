@@ -29,6 +29,10 @@ static func player_def() -> Dictionary:
                 "id": "player", "display": "Kum Yürüyücüsü", "team": "player",
                 "max_hp": 120, "speed": 340.0, "damage": 14, "cooldown": 0.65,
                 "range": 560.0, "bolt_speed": 980.0, "knockback": 140.0,
+                # Faz 06 yetenekleri: Enerji Patlamasi (radyal) + Atılım (dash)
+                "burst_count": 10, "burst_damage": 10, "burst_cd": 8.0,
+                "burst_speed": 780.0, "dash_dist": 260.0, "dash_cd": 5.0,
+                "dash_speed": 1500.0,
                 "cell": Vector2i(400, 460), "sheets": _sheets("player"),
         }
 

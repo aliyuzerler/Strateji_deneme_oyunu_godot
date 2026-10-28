@@ -1,11 +1,13 @@
 class_name CombatBolt
 extends Node2D
-## Duz hatli mermi (Faz 05). Hedef takibi yok; isabet = yaricap sorgusu.
+## Duz hatli mermi (Faz 05) + Faz 06: enerji izi (trail noktalari) ve
+## isabet carpma parlamasi. Hedef takibi yok; isabet = yaricap sorgusu.
 ## Oyuncu mermisi EnemyRegistry tarar; dusman mermisi dogrudan oyuncuyu
 ## kontrol eder. Omru dolan / sahneyi asan mermi kendini yok eder.
 
 const TEX_PLAYER := preload("res://assets/art/vfx/tex_fx_bolt_player_01.png")
 const TEX_ENEMY := preload("res://assets/art/vfx/tex_fx_bolt_enemy_01.png")
+const TRAIL_SPACING := 30.0
 
 var velocity := Vector2.ZERO
 var damage := 10
@@ -17,6 +19,7 @@ var fx: Node2D = null
 var player_target: Node2D = null
 
 var _life := 0.0
+var _trail_acc := 0.0
 
 
 func setup(p_team: String, p_damage: int, p_registry: EnemyRegistry, p_fx: Node2D, p_player: Node2D = null) -> void:
@@ -32,8 +35,14 @@ func setup(p_team: String, p_damage: int, p_registry: EnemyRegistry, p_fx: Node2
 
 
 func _physics_process(delta: float) -> void:
-        position += velocity * delta
+        var step := velocity * delta
+        position += step
         _life += delta
+        # Faz 06: iz noktalari — hareket yonu tersine sabit aralikla birakilir
+        _trail_acc += step.length()
+        if _trail_acc >= TRAIL_SPACING and fx is CombatFx:
+                _trail_acc = 0.0
+                (fx as CombatFx).spawn_trail_dot(position - step.normalized() * 14.0, team)
         if _life >= max_life:
                 queue_free()
                 return
@@ -44,8 +53,10 @@ func _physics_process(delta: float) -> void:
                 var cu := hit as CombatUnit
                 if cu != null and not cu.dead:
                         cu.take_hit(damage, position)
-                        if fx != null:
-                                fx.spawn_hit_puff(position, true)
+                        if fx is CombatFx:
+                                var cfx := fx as CombatFx
+                                cfx.spawn_impact_flash(position, true)
+                                cfx.spawn_hit_puff(position, true)
                         queue_free()
         else:
                 if player_target == null or not is_instance_valid(player_target):
@@ -55,6 +66,8 @@ func _physics_process(delta: float) -> void:
                         return
                 if position.distance_to(pu.global_position) <= hit_radius:
                         pu.take_hit(damage, position)
-                        if fx != null:
-                                fx.spawn_hit_puff(position, false)
+                        if fx is CombatFx:
+                                var cfx2 := fx as CombatFx
+                                cfx2.spawn_impact_flash(position, false)
+                                cfx2.spawn_hit_puff(position, false)
                         queue_free()

@@ -35,3 +35,13 @@ tpl-033,assets/art/characters/tex_unit_spitter_death_sheet_01.png,proje-ici,Plac
 tpl-034,assets/art/vfx/tex_fx_bolt_player_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
 tpl-035,assets/art/vfx/tex_fx_bolt_enemy_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
 tpl-036,assets/art/vfx/tex_fx_ring_telegraph_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f05_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-037,assets/art/ui/tex_ui_joystick_base_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f06_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-038,assets/art/ui/tex_ui_joystick_knob_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f06_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-039,assets/art/ui/tex_ui_icon_burst_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f06_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-040,assets/art/ui/tex_ui_icon_dash_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f06_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-041,assets/art/ui/tex_ui_icon_mend_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f06_art.py),Proje ici gecici placeholder (TMP rozetli),-,2026-10-28,evet,evet,-,main-agent
+tpl-042,assets/art/vfx/tex_fx_xp_orb_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f06_art.py),Proje ici gecici placeholder (TMP - FX dokularinda rozet texture'a islenmez, CSV+dev panel isaretlemesi kullanilir),-,2026-10-28,evet,evet,-,main-agent
+tpl-043,assets/art/vfx/tex_fx_scrap_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f06_art.py),Proje ici gecici placeholder (TMP - isaretleme politikasi bkz. tpl-042),-,2026-10-28,evet,evet,-,main-agent
+tpl-044,assets/art/vfx/tex_fx_dust_puff_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f06_art.py),Proje ici gecici placeholder (TMP - isaretleme politikasi bkz. tpl-042),-,2026-10-28,evet,evet,-,main-agent
+tpl-045,assets/art/vfx/tex_fx_impact_core_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f06_art.py),Proje ici gecici placeholder (TMP - isaretleme politikasi bkz. tpl-042),-,2026-10-28,evet,evet,-,main-agent
+tpl-046,assets/art/vfx/tex_fx_trail_dot_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_f06_art.py),Proje ici gecici placeholder (TMP - isaretleme politikasi bkz. tpl-042),-,2026-10-28,evet,evet,-,main-agent

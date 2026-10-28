@@ -2,9 +2,9 @@
 
 > Bu dosya, Dustbound üzerinde çalışan yapay zekâ geliştirme ajanlarının ve ekip üyelerinin ortak operasyon kılavuzudur. **Sonraki tüm görevlerde bu beş doküman (AGENTS, ARCHITECTURE, ART_DIRECTION, ASSET_PIPELINE, TESTING) esas alınır.** Hiçbir kod veya varlık üretimi, ilgili doküman okunmadan başlatılmaz.
 
-- Sürüm: 0.2.0
+- Sürüm: 0.3.0
 - Son güncelleme: 2026-10-28
-- Aşama: **Faz 05 — Savaş Varlıkları** (0: Temel Dokümantasyon, 0.5: İzometrik Kanıt Sahnesi tamamlandı)
+- Aşama: **Faz 06 — Mobil HUD ve Savaş Efektleri** (0: Dokümantasyon, 0.5: Kanıt Sahnesi, 05: Savaş Varlıkları tamamlandı)
 
 ---
 
@@ -34,6 +34,10 @@ Bu aşamada **yapılabilir** olan işler: doküman güncellemeleri, klasör düz
 Bu sınırın gerekçesi basittir: temelsiz yazılan her mekaniğin ileride ARCHITECTURE.md'deki yapıya taşınması ikinci kez iş yapmaktır. Bir görevin Aşama 0 sınırını aşması gerekiyorsa, önce bu doküman kümesi güncellenmeli, ardından iş onlara göre planlanmalıdır.
 
 **Aşama 0.5 (kullanıcı göreviyle eklendi):** İzometrik 2.5D kanıt sahnesi — Camera2D takip sistemi, izometrik TileMapLayer zemin, tap-to-move oyuncu hareketi, Y-sort derinlik kanıtı, blob gölgeler ve sınırlı dinamik ışık (2/4 bütçe). Geçici placeholder varlıklar ASSET_PIPELINE ölçü/pivot/palet kurallarına uygun üretildi; TileSet geçici olarak kodla kurulur (production'da .tres). Bu kapsam dışındaki mekanik yasağı (savaş, inşa, ekonomi, kayıt) sürer.
+
+**Faz 05:** Savaş varlıkları — oyuncu savaş yetenekli, üç düşman tipi (Kum Koşucusu/Grit Muhafız/Fırtına Salyası) davranış farklarıyla, otomatik hedefleme, hasar/ölüm animasyonları, dalga üretimi + bench.
+
+**Faz 06:** Mobil HUD ve savaş efektleri — GameHud (can/XP/hurda/süre, safe area, en-boy oranı), TouchJoystick (sol alt), yetenek çubuğu (sağ alt: Enerji Patlaması + Atılım), seviye atlamada oyunu duraklatan yetenek seçimi, ödül sistemi (XP topu/hurda + mıknatıs toplama), FXBudget (efekt cap'leri + otomatik kalite), efekt paketi (iz/parlama/toz/toplama). Kapsam dışı: üretim sanat paketi, ses, def_*.tres geçişi.
 
 ## 3. Doküman Haritası ve Öncelik Sırası
 

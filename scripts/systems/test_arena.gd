@@ -35,6 +35,7 @@ const LIGHT_TEXTURE := "res://assets/art/vfx/tex_fx_light_falloff_01.png"
 @onready var input_node: ArenaInput = $ArenaInput
 @onready var marker: Sprite2D = $TargetMarker
 @onready var ground_fx: Node2D = $GroundFx
+@onready var loot_layer: Node2D = $LootLayer
 @onready var air_fx: CombatFx = $AirFx
 
 var player: PlaceholderPlayer
@@ -48,6 +49,18 @@ var director: EnemyDirector = null
 var lock_marker: Sprite2D = null
 var _hud_acc := 0.0
 
+# Faz 06: HUD/efekt/odul orkestrasyonu
+var fx_budget: FXBudget = null
+var player_state: PlayerState = null
+var loot: LootDirector = null
+var game_hud: GameHud = null
+var auto_wave: Timer = null
+var _pause_reasons := {}
+var _bench_busy := false
+## Faz 06: seviye duraklatmasi acik/kapali (eski smoke akislari icin kapali
+## tutulabilir; f06 smoke davranisi acik olarak test eder).
+var levelup_pause_enabled := true
+
 
 func _ready() -> void:
         _build_ground()
@@ -56,6 +69,7 @@ func _ready() -> void:
         _setup_connections()
         _setup_camera()
         _setup_combat()
+        _setup_faz06_args()
         if OS.get_cmdline_user_args().has("--shot"):
                 _run_shot_sequence()
         for arg in OS.get_cmdline_user_args():
@@ -169,6 +183,11 @@ func _process(delta: float) -> void:
                         target_name = player.current_target.display_name
                 hud.set_combat_info("Düşman: %d  |  HP: %d/%d  |  Hedef: %s" % [
                         registry.count(), player.hp, player.max_hp, target_name])
+                if fx_budget != null:
+                        var s := fx_budget.stats()
+                        hud.set_fx_info("FX: kalite %s · efekt %d/%d · etiket %d · iz %d · top %d · fps_ort %.0f" % [
+                                s["quality"], s["fx"], FXBudget.CAP_FX, s["labels"],
+                                s["trails"], s["orbs"], s["fps_avg"]])
         if lock_marker != null:
                 var t := player.current_target
                 if t != null and is_instance_valid(t) and not t.dead:
@@ -193,14 +212,25 @@ func request_move_to_cell(cell: Vector2i) -> void:
         marker.position = target
 
 
-func toggle_pause() -> void:
-        paused = not paused
+# ---------------- duraklatma yonetimi (Faz 06: neden tabanli) ----------------
+## Nedenler: "manual" (ESC/dugme), "levelup" (yetenek secimi). Hiçbir aktif
+## neden kalmadiginda oyun devam eder. toggle_pause() eski davranisi korur
+## (smoke uyumu: cift cagri -> duraklat + devam).
+func set_pause_reason(reason: String, on: bool) -> void:
+        _pause_reasons[reason] = on
+        paused = _pause_reasons.values().has(true)
         get_tree().paused = paused
         hud.set_status("DURAKLATILDI" if paused else "")
-        hud.pause_button.text = "DEVAM" if paused else "DURAKLAT"
+        if game_hud != null:
+                game_hud.set_paused(paused)
+        hud.pause_button.text = "DEVAM" if (paused and _pause_reasons.get("manual", false)) else "DURAKLAT"
 
 
-# -------------------------------------------------- Faz 05: savas orkestrasyonu
+func toggle_pause() -> void:
+        set_pause_reason("manual", not _pause_reasons.get("manual", false))
+
+
+# -------------------------------------------------- Faz 05 + 06: savas orkestrasyonu
 func _setup_combat() -> void:
         registry = EnemyRegistry.new()
         add_child(registry)
@@ -221,15 +251,108 @@ func _setup_combat() -> void:
         ground_fx.add_child(lock_marker)
         lock_marker.visible = false
         hud.wave_button_pressed.connect(func() -> void: spawn_demo_wave())
-        hud.bench_button_pressed.connect(func() -> void: director.run_bench(100, 8.0))
+        hud.bench_button_pressed.connect(_on_manual_bench)
+        # ---------------- Faz 06: butce, durum, odul, HUD ----------------
+        fx_budget = FXBudget.new()
+        add_child(fx_budget)
+        fx_budget.register_parent("fx", air_fx)
+        fx_budget.register_parent("label", air_fx)
+        fx_budget.register_parent("trail", air_fx)
+        fx_budget.register_parent("ground", ground_fx)
+        fx_budget.register_parent("orb", loot_layer)
+        air_fx.budget = fx_budget
+        player_state = PlayerState.new()
+        add_child(player_state)
+        loot = LootDirector.new()
+        add_child(loot)
+        loot.setup(loot_layer, player, player_state, air_fx, fx_budget)
+        director.unit_spawned.connect(loot.track_unit)
+        director.wave_spawned.connect(_on_wave_spawned)
+        game_hud = $GameHud
+        game_hud.setup(player, player_state, fx_budget)
+        game_hud.joystick_moved.connect(func(v: Vector2) -> void: player.joystick_vector = v)
+        game_hud.ability_burst_pressed.connect(func() -> void: player.try_burst())
+        game_hud.ability_dash_pressed.connect(func() -> void: player.try_dash())
+        game_hud.pause_pressed.connect(toggle_pause)
+        game_hud.dev_toggled.connect(func(shown: bool) -> void: hud.set_dev_visible(shown))
+        game_hud.upgrade_chosen.connect(_on_upgrade_chosen)
+        game_hud.upgrade_skipped.connect(_on_upgrade_skipped)
+        player_state.leveled.connect(_on_leveled)
+        player.upgrade_applied.connect(_on_upgrade_applied)
+        # otomatik dalga akisi (35 s; duraklatmada Timer de durur)
+        auto_wave = Timer.new()
+        auto_wave.wait_time = 35.0
+        auto_wave.autostart = true
+        auto_wave.timeout.connect(func() -> void: spawn_demo_wave(4 + player_state.wave))
+        add_child(auto_wave)
+
+
+func _setup_faz06_args() -> void:
+        var args := OS.get_cmdline_user_args()
+        if args.has("--fx-high") and fx_budget != null:
+                fx_budget.force_quality = FXBudget.Quality.HIGH
+        if args.has("--safe-test") and game_hud != null:
+                # cihet/kulak simülasyonu: L110 T40 R70 B0 + gorsel isaret
+                game_hud.debug_force_safe_area(110.0, 40.0, 70.0, 0.0, true)
 
 
 func spawn_demo_wave(count: int = 6) -> void:
         director.spawn_wave(count)
 
 
+func _on_wave_spawned(count: int) -> void:
+        player_state.wave += 1
+        game_hud.toast("DALGA %d GELİYOR" % player_state.wave)
+
+
+func _on_leveled(level: int) -> void:
+        air_fx.spawn_levelup(player.global_position)
+        if player.dead or not levelup_pause_enabled:
+                game_hud.toast("SEVİYE %d" % level)
+                return
+        # YETENEK SECIMI -> OYUNU DURAKLAT (gorev geregi)
+        var pool := PlayerState.UPGRADE_POOL.duplicate()
+        pool.shuffle()
+        var options: Array = pool.slice(0, 3)
+        set_pause_reason("levelup", true)
+        game_hud.show_level_up(level, options)
+
+
+func _on_upgrade_chosen(id: String) -> void:
+        player.apply_upgrade(id)
+        game_hud.hide_level_up()
+        set_pause_reason("levelup", false)
+        for def in PlayerState.UPGRADE_POOL:
+                if def["id"] == id:
+                        game_hud.toast("Yükseltme: %s" % def["name"])
+                        break
+
+
+func _on_upgrade_skipped() -> void:
+        game_hud.hide_level_up()
+        set_pause_reason("levelup", false)
+        game_hud.toast("Seviye atlandı")
+
+
+## "magnet" yukseltmesi loot alanini buyutur (oyuncu bilmez, arena uygular).
+func _on_upgrade_applied(kind: String) -> void:
+        if kind == "magnet" and loot != null:
+                loot.magnet_range *= 1.3
+
+
 func _on_player_died(_unit: CombatUnit) -> void:
         hud.set_status("DÜŞTÜ — yeniden doğuluyor...")
+        game_hud.toast("DÜŞTÜN — yeniden doğuluyor")
+
+
+func _on_manual_bench() -> void:
+        if _bench_busy:
+                return
+        _bench_busy = true
+        auto_wave.stop()
+        await director.run_bench(100, 8.0)
+        auto_wave.start()
+        _bench_busy = false
 
 
 func _on_bench_finished(r: Dictionary) -> void:
@@ -238,7 +361,20 @@ func _on_bench_finished(r: Dictionary) -> void:
 
 
 func _run_bench(total: int) -> void:
-        await director.run_bench(total, 8.0)
+        if auto_wave != null:
+                auto_wave.stop()
+        var r := await director.run_bench(total, 8.0)
+        # Faz 06: FX butcesi + HUD metrikleriyle zenginlestirilmis cikti
+        var f06 := {
+                "f05": r,
+                "fx": fx_budget.stats(),
+                "player": {
+                        "level": player_state.level, "xp": player_state.xp,
+                        "scrap": player_state.scrap, "kills": player_state.kills,
+                        "wave": player_state.wave,
+                },
+        }
+        print("F06_BENCH_JSON ", JSON.stringify(f06))
         print("F05_BENCH_DONE")
         get_tree().quit()
 
@@ -269,6 +405,30 @@ func _run_shot_sequence() -> void:
         await _capture(prefix + "_f05_combat.png")
         await get_tree().create_timer(1.6).timeout
         await _capture(prefix + "_f05_combat_late.png")
+        # ---------------- Faz 06 kanitlari ----------------
+        # 1) HUD + joystick + yetenek cubugu + efektler (oyun ici)
+        player.try_burst()
+        await get_tree().create_timer(0.35).timeout
+        await _capture(prefix + "_f06_hud.png")
+        # 2) yetenek patlamasi karesi (mermi izleri + carpma parlaklari)
+        player.try_dash()
+        await get_tree().create_timer(0.22).timeout
+        await _capture(prefix + "_f06_fx_burst.png")
+        # 3) seviye atlama secimi: oyun duraklatilir, panel acilir
+        player_state.gain_xp(player_state.xp_to_next() - player_state.xp)
+        await get_tree().create_timer(0.5).timeout
+        await _capture(prefix + "_f06_levelup.png")
+        # secimi tamamla (ilk kart) ve devam et
+        if game_hud.is_level_up_open():
+                var cards := game_hud._levelup_cards.get_children()
+                if cards.size() > 0:
+                        _on_upgrade_chosen(str(cards[0].get_meta("upgrade_id")))
+        await get_tree().create_timer(0.4).timeout
+        # 4) dev paneli acik kare
+        hud.set_dev_visible(true)
+        await get_tree().create_timer(0.35).timeout
+        await _capture(prefix + "_f06_dev.png")
+        hud.set_dev_visible(false)
         print("SHOT_SEQUENCE_DONE")
         get_tree().quit()
 

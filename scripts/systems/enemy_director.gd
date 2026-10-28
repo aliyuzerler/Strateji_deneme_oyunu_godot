@@ -5,6 +5,8 @@ extends Node
 ## / 30% spitter (rng tohumlu — deterministik uretim).
 
 signal bench_finished(results: Dictionary)
+signal unit_spawned(unit: CombatUnit)   # Faz 06: loot/dinleyiciler icin
+signal wave_spawned(count: int)         # Faz 06: dalga sayaci (bench haric)
 
 const GATE_CELLS: Array[Vector2i] = [
         Vector2i(1, 1), Vector2i(10, 1), Vector2i(1, 10), Vector2i(10, 10),
@@ -39,6 +41,7 @@ func spawn_wave(count: int) -> Array:
         var out: Array = []
         for i in count:
                 out.append(_spawn_one(defs[i % defs.size()], GATE_CELLS[i % GATE_CELLS.size()]))
+        wave_spawned.emit(count)
         return out
 
 
@@ -73,6 +76,7 @@ func _spawn_one(def: Dictionary, cell: Vector2i) -> EnemyUnit:
                 + Vector2(rng.randf_range(-48.0, 48.0), rng.randf_range(-24.0, 24.0))
         e.set_bounds(world_bounds.grow(-24.0))
         registry.register(e)
+        unit_spawned.emit(e)
         return e
 
 

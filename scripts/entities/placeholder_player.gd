@@ -1,9 +1,12 @@
 class_name PlaceholderPlayer
 extends CombatUnit
-## Kanit sahnesi oyuncusu — Faz 05 ile savas yetenekli:
-##   - tap hedefine duz hat hareketi + gelistirici klavye hareketi (korundu)
+## Kanit sahnesi oyuncusu — Faz 05 ile savas yetenekli, Faz 06 ile mobil
+## girdi ve aktif yetenekler:
+##   - tap hedefi duz hat hareketi + gelistirici klavye + SANAL JOYSTICK
 ##   - otomatik hedefleme + turkuaz enerji mermisi (turkuaz yalnizca oyuncuda)
-##   - hasar alinca flash + geri itme + hasar etiketi; olumde respawn
+##   - Enerji Patlamasi: radyal N mermi (Q / HUD dugmesi)
+##   - Atılım: kisa invuln'lu hücum, toz izi (E / HUD dugmesi)
+##   - seviye yukseltmeleri PlayerState kartlarindan uygulanir
 ##
 ## NOT: Sinif adi mevcut sahne/smoke referanslari nedeniyle korunmustur;
 ## production oyuncu birimi ayri gorevde netlestirilecek (worklog).
@@ -17,9 +20,31 @@ var current_cell := Vector2i.ZERO
 var respawn_point := Vector2.ZERO
 var invuln := 0.0
 
+# Faz 06: mobil girdi — joystick vektoru (GameHud/Arena baglar)
+var joystick_vector := Vector2.ZERO
+
+# Faz 06: yetenek parametreleri (player_def'ten)
+var burst_count := 10
+var burst_damage := 10
+var burst_cd := 8.0
+var burst_speed := 780.0
+var dash_dist := 260.0
+var dash_cd := 5.0
+var dash_speed := 1500.0
+
 var _target_world := Vector2.ZERO
 var _moving := false
 var _respawning := false
+
+# Faz 06: ic durum
+var _burst_t := 0.0
+var _dash_t := 0.0
+var _dash_dir := Vector2.ZERO
+var _dust_acc := 0.0
+var _last_move_dir := Vector2(0, 1)
+var _base_damage := 0.0
+var _base_speed := 0.0
+var _base_cooldown := 0.0
 
 var moving: bool:
         get:
@@ -40,6 +65,16 @@ func _ready() -> void:
         attack_range = float(def["range"])
         knockback_power = float(def.get("knockback", 140.0))
         bolt_speed = float(def.get("bolt_speed", 980.0))
+        burst_count = int(def.get("burst_count", 10))
+        burst_damage = int(def.get("burst_damage", 10))
+        burst_cd = float(def.get("burst_cd", 8.0))
+        burst_speed = float(def.get("burst_speed", 780.0))
+        dash_dist = float(def.get("dash_dist", 260.0))
+        dash_cd = float(def.get("dash_cd", 5.0))
+        dash_speed = float(def.get("dash_speed", 1500.0))
+        _base_damage = float(attack_damage)
+        _base_speed = move_speed
+        _base_cooldown = attack_cooldown
         setup_sheets(def["cell"], def["sheets"])
         # turkuaz enerji isigi — ART_DIRECTION: turkuaz enerji yalnizca oyuncuda
         # NOT: energy 0.55 — kristal + gun isigiyla toplam pozlama dengesi
@@ -62,15 +97,38 @@ func _process(delta: float) -> void:
                 body.visible = int(invuln * 12.0) % 2 == 0
         else:
                 body.visible = true
+        _burst_t = maxf(_burst_t - delta, 0.0)
+        _dash_t = maxf(_dash_t - delta, 0.0)
 
-        # 1) hareket (mevcut davranis: klavye ya da tap hedefi)
+        # gelistirici klavye kisayollari (dokunmatik HUD dugmeleri ayri)
+        if Input.is_action_just_pressed("ability_burst"):
+                try_burst()
+        if Input.is_action_just_pressed("ability_dash"):
+                try_dash()
+
+        # 1) hareket — oncelik: klavye > joystick > tap hedefi > atılım
         var key_dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+        var stick := joystick_vector
+        if stick.length() < 0.18:
+                stick = Vector2.ZERO  # oluj bolge
         var move_dir := Vector2.ZERO
         var vel := Vector2.ZERO
-        if key_dir.length_squared() > 0.01:
+        if _dash_t > 0.0:
+                move_dir = _dash_dir
+                vel = _dash_dir * dash_speed
+                _dust_acc += delta
+                if _dust_acc >= 0.03:
+                        _dust_acc = 0.0
+                        if fx is CombatFx:
+                                (fx as CombatFx).spawn_footstep_dust(position + Vector2(0, 4))
+        elif key_dir.length_squared() > 0.01:
                 _moving = false
                 move_dir = key_dir.normalized()
                 vel = key_dir * move_speed
+        elif stick.length_squared() > 0.01:
+                _moving = false
+                move_dir = stick.normalized()
+                vel = stick * move_speed
         elif _moving:
                 var to := _target_world - position
                 var step := move_speed * delta
@@ -88,17 +146,103 @@ func _process(delta: float) -> void:
                 _clamp_position()
         if move_dir.length_squared() > 0.0:
                 set_facing(move_dir.angle())
+                _last_move_dir = move_dir.normalized()
         _update_cell()
 
         # 2) savas
         tick_combat(delta)
         _auto_attack()
-        pick_locomotion_anim(move_dir.length_squared() > 0.0 or _moving)
+        var is_walking := move_dir.length_squared() > 0.0 or _moving
+        pick_locomotion_anim(is_walking)
+        # 3) ayak tozu (Faz 06) — yuruyus sirasinda olcuklu uretim
+        if is_walking and vel.length() > 60.0 and not (_dash_t > 0.0):
+                _dust_acc += delta
+                if _dust_acc >= 0.14:
+                        _dust_acc = 0.0
+                        if fx is CombatFx:
+                                (fx as CombatFx).spawn_footstep_dust(position + Vector2(0, 4))
 
 
 func move_to(world_target: Vector2) -> void:
         _target_world = world_target
         _moving = true
+
+
+# ---------------- Faz 06: aktif yetenekler ----------------
+
+func can_burst() -> bool:
+        return _burst_t <= 0.0 and not dead
+
+
+func can_dash() -> bool:
+        return _dash_t <= 0.0 and not dead
+
+
+## 0..1 arasi hazirlik orani (HUD cooldown halkasi icin).
+func burst_frac() -> float:
+        return 1.0 - _burst_t / maxf(burst_cd, 0.01)
+
+
+func dash_frac() -> float:
+        return 1.0 - _dash_t / maxf(dash_cd, 0.01)
+
+
+## Enerji Patlamasi: radyal N mermi; cagiran HUD/komuta katmanidir.
+func try_burst() -> bool:
+        if not can_burst():
+                return false
+        _burst_t = burst_cd
+        _force_anim("attack")
+        for i in burst_count:
+                var ang := TAU * float(i) / float(burst_count) + 0.15
+                fire_bolt(global_position + Vector2.from_angle(ang) * 120.0, burst_speed, burst_damage)
+        if fx is CombatFx:
+                (fx as CombatFx).spawn_impact_flash(global_position + Vector2(0, -50), true)
+        return true
+
+
+## Atılım: yon = son hareket yonu (yoksa baktigi yon); kisa invuln + toz izi.
+func try_dash() -> bool:
+        if not can_dash():
+                return false
+        var dir := _last_move_dir
+        if dir.length_squared() < 0.01:
+                dir = Vector2.from_angle(facing * PI / 4.0)
+        _dash_dir = dir.normalized()
+        _dash_t = dash_dist / dash_speed
+        invuln = maxf(invuln, 0.32)
+        _dust_acc = 0.0
+        set_facing(_dash_dir.angle())
+        return true
+
+
+## PlayerState seviye kartlarindan uygulanir ("magnet" arenaya sinyallenir).
+func apply_upgrade(kind: String) -> void:
+        match kind:
+                "damage":
+                        _base_damage *= 1.15
+                        attack_damage = int(round(_base_damage))
+                "speed":
+                        _base_speed *= 1.12
+                        move_speed = _base_speed
+                "cooldown":
+                        _base_cooldown *= 0.88
+                        attack_cooldown = _base_cooldown
+                        burst_cd *= 0.88
+                        dash_cd *= 0.88
+                "vitality":
+                        max_hp += 25
+                        hp = mini(hp + 25, max_hp)
+                        if hp_bar != null:
+                                hp_bar.queue_redraw()
+                "burst":
+                        burst_count += 2
+                "magnet":
+                        pass  # arena baglantisi upgrade_applied ile yapar
+        upgrade_applied.emit(kind)
+
+
+signal upgrade_applied(kind: String)
 
 
 func take_hit(amount: int, from_pos: Vector2) -> void:

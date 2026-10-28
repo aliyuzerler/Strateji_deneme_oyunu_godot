@@ -25,6 +25,13 @@ func _run() -> void:
         root.add_child(arena)
         await process_frame
         await process_frame
+        # ---- Faz 06 uyum kablosu (kontroller degismedi) ----
+        # Yeni oduul sistemi dusman oldumlerinden XP toplar; seviye duraklatmasi
+        # ve otomatik dalga bu ESKI akista deterministigi bozar -> devre disi.
+        # Seviye-duraklatma davranisi f06_smoke_runner.gd icinde acik test edilir.
+        arena.levelup_pause_enabled = false
+        if arena.auto_wave != null:
+                arena.auto_wave.stop()
         var player: PlaceholderPlayer = arena.player
         var registry: EnemyRegistry = arena.registry
         var director: EnemyDirector = arena.director
