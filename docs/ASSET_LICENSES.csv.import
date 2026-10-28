@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bel1tqf03m2jv"
+
+[deps]
+
+files=["res://docs/ASSET_LICENSES.dosya.translation", "res://docs/ASSET_LICENSES.kaynak.translation", "res://docs/ASSET_LICENSES.uretici.translation", "res://docs/ASSET_LICENSES.lisans.translation", "res://docs/ASSET_LICENSES.surum.translation", "res://docs/ASSET_LICENSES.tarih.translation", "res://docs/ASSET_LICENSES.ticari.translation", "res://docs/ASSET_LICENSES.turetme.translation", "res://docs/ASSET_LICENSES.atif.translation", "res://docs/ASSET_LICENSES.dogrulayan.translation"]
+
+source_file="res://docs/ASSET_LICENSES.csv"
+dest_files=["res://docs/ASSET_LICENSES.dosya.translation", "res://docs/ASSET_LICENSES.kaynak.translation", "res://docs/ASSET_LICENSES.uretici.translation", "res://docs/ASSET_LICENSES.lisans.translation", "res://docs/ASSET_LICENSES.surum.translation", "res://docs/ASSET_LICENSES.tarih.translation", "res://docs/ASSET_LICENSES.ticari.translation", "res://docs/ASSET_LICENSES.turetme.translation", "res://docs/ASSET_LICENSES.atif.translation", "res://docs/ASSET_LICENSES.dogrulayan.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

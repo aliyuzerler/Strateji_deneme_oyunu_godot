@@ -1,0 +1,14 @@
+id,dosya_yolu,kaynak_url,uretici,lisans,surum,tarih,ticari_izin,turetme_izin,atif_metni,dogrulayan
+tpl-001,assets/art/environment/tiles/tex_env_sand_a_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-002,assets/art/environment/tiles/tex_env_sand_b_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-003,assets/art/environment/tiles/tex_env_sand_c_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-004,assets/raw/arena_sources/tex_env_sand_a_01_2x.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-005,assets/raw/arena_sources/tex_env_sand_b_01_2x.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-006,assets/raw/arena_sources/tex_env_sand_c_01_2x.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-007,assets/art/characters/tex_unit_player_idle_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-008,assets/art/environment/props/tex_prop_rock_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-009,assets/art/environment/props/tex_prop_pillar_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-010,assets/art/environment/props/tex_prop_crystal_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-011,assets/art/vfx/tex_fx_target_marker_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-012,assets/art/vfx/tex_fx_blob_shadow_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent
+tpl-013,assets/art/vfx/tex_fx_light_falloff_01.png,proje-ici,Placeholder Uretim Araci (scripts/gen_placeholder_art.py),Proje ici gecici placeholder,-,2026-10-28,evet,evet,-,main-agent

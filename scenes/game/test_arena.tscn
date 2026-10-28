@@ -1,0 +1,118 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/test_arena.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/game/camera_rig.tscn" id="2"]
+[ext_resource type="Script" path="res://scripts/systems/arena_input.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/ui/arena_hud.gd" id="4"]
+
+[node name="TestArena" type="Node2D"]
+script = ExtResource("1")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.78, 0.74, 0.68, 1)
+
+[node name="SunLight" type="DirectionalLight2D" parent="."]
+rotation = -0.45
+color = Color(1, 0.92, 0.78, 1)
+energy = 0.32
+
+[node name="GroundLayer" type="TileMapLayer" parent="."]
+
+[node name="OverlayLayer" type="TileMapLayer" parent="."]
+
+[node name="StructureLayer" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+
+[node name="TargetMarker" type="Sprite2D" parent="."]
+visible = false
+
+[node name="EntitiesLayer" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="CameraRig" parent="." instance=ExtResource("2")]
+
+[node name="ArenaInput" type="Node" parent="."]
+process_mode = 3
+script = ExtResource("3")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+process_mode = 3
+script = ExtResource("4")
+
+[node name="Root" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PerfLabel" type="Label" parent="HUD/Root"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 10.0
+offset_right = 940.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.956863, 0.913725, 0.823529, 1)
+theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 17
+text = "FPS: -"
+
+[node name="PosLabel" type="Label" parent="HUD/Root"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 38.0
+offset_right = 940.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.956863, 0.913725, 0.823529, 1)
+theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 17
+text = "Hücre: -"
+
+[node name="StatusLabel" type="Label" parent="HUD/Root"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 66.0
+offset_right = 940.0
+offset_bottom = 90.0
+theme_override_colors/font_color = Color(0.851, 0.627, 0.357, 1)
+theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 17
+text = ""
+
+[node name="PauseButton" type="Button" parent="HUD/Root"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -170.0
+offset_top = 10.0
+offset_right = -16.0
+offset_bottom = 54.0
+grow_horizontal = 0
+text = "DURAKLAT"
+
+[node name="HintLabel" type="Label" parent="HUD/Root"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -42.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.956863, 0.913725, 0.823529, 0.85)
+theme_override_colors/font_shadow_color = Color(0.0784314, 0.0862745, 0.101961, 0.63)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "Tek dokunuş: yürü · İki parmak: yakınlaştır · WASD/oklar: geliştirici hareketi · ESC: duraklat"
